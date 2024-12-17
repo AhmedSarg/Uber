@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:uber/data/models/trip_model.dart';
@@ -74,8 +73,8 @@ class _DriverSearchViewState extends State<DriverSearchView>
       height: radius,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border:
-            Border.all(color: ColorManager.primary.withOpacity(1 - _controller.value)),
+        border: Border.all(
+            color: ColorManager.primary.withOpacity(1 - _controller.value)),
       ),
     );
   }

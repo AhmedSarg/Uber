@@ -29,12 +29,14 @@ class AppStrings {
 
   static const usernameError = "username must contain only letters and numbers";
   static const emailError = "email is invalid";
-  static const weekPasswordError = "password is Week using should contain at least one [upper case,lower case,digit,Special character,8 characters in length]";
+  static const weekPasswordError =
+      "password is Week using should contain at least one [upper case,lower case,digit,Special character,8 characters in length]";
   static const matchError = "passwords doesn't match";
   static const upperCaseError = "should contain at least one upper case";
   static const lowerCaseError = "should contain at least one lower case";
   static const digitError = "should contain at least one digit";
-  static const specialCharacterError = "should contain at least one Special character";
+  static const specialCharacterError =
+      "should contain at least one Special character";
   static const lengthError = "Must be at least 8 characters in length";
   static const phoneNumberError = "phone number is invalid";
 
@@ -48,7 +50,6 @@ class AppStrings {
   static const login = "Login";
   static const register = "Register";
   static const registerButton = "REGISTER";
-
 
   static const pickup = "Pickup";
   static const destination = "Destination";

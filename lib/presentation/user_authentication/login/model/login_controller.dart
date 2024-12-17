@@ -69,9 +69,10 @@ class LoginController extends GetxController {
   Future<void> signInWithTwitter() async {
     // Create a TwitterLogin instance
     final twitterLogin = TwitterLogin(
-        apiKey: 'QHdVcI4CAznyj2FvwZ1rmM3n2',
-        apiSecretKey: 'MWguBIIYTZgiULjv1gPhOFeIO1Zjj3vZzImFhTm5ptQsnnfWDy',
-        redirectURI: 'flutter-twitter-login://');
+      apiKey: 'QHdVcI4CAznyj2FvwZ1rmM3n2',
+      apiSecretKey: 'MWguBIIYTZgiULjv1gPhOFeIO1Zjj3vZzImFhTm5ptQsnnfWDy',
+      redirectURI: 'flutter-twitter-login://',
+    );
     // Trigger the sign-in flow
     final authResult = await twitterLogin.login();
     // Create a credential from the access token
@@ -88,14 +89,16 @@ class LoginController extends GetxController {
       print(emailController.text);
       print(passwordController.text);
       UserCredential userCredential = await auth.signInWithEmailAndPassword(
-          email: emailController.text, password: passwordController.text);
+        email: emailController.text,
+        password: passwordController.text,
+      );
       print(userCredential.credential);
       print(userCredential.user);
       print(userCredential.additionalUserInfo);
       return true;
     } on FirebaseAuthException catch (e) {
-        print('xx');
-        print(e);
+      print('xx');
+      print(e);
       if (e.code == 'invalid-email') {
         print('Firebase Authentication Exception: ${e.code}/////////////');
       } else if (e.code == 'user-not-found') {

@@ -101,6 +101,7 @@ class RegisterController extends GetxController {
           email: emailController.text,
           password: passwordController.text
       );
+
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         debugPrint('The password provided is too weak.');

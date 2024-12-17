@@ -3,16 +3,16 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:uber/data/global/variables.dart';
 import 'package:uber/presentation/resources/routes_manager.dart';
+import 'package:uber/presentation/resources/widgets.dart';
 import 'package:uber/presentation/selection/model/selection_model.dart';
 import 'package:uber/presentation/user_authentication/login/model/login_controller.dart';
 import 'package:uber/presentation/user_authentication/login/model/login_model.dart';
-import 'package:uber/presentation/user_authentication/model/user_authentication_model.dart' as auth;
+import 'package:uber/presentation/user_authentication/model/user_authentication_model.dart'
+    as auth;
 
-import 'package:uber/presentation/resources/widgets.dart';
-
-import '../../../resources/strings_manager.dart';
 import '../../../resources/assets_manager.dart';
 import '../../../resources/color_manager.dart';
+import '../../../resources/strings_manager.dart';
 import '../../../resources/values_manager.dart';
 
 class LoginView extends GetView<LoginController> {
@@ -170,35 +170,53 @@ class LoginView extends GetView<LoginController> {
           if (controller.formKey.currentState!.validate()) {
             bool isSignedIn = await controller.signInWithEmailAndPassword();
             print(isSignedIn);
-            if(isSignedIn) {
+            if (isSignedIn) {
               snackbar(context, "Success Ya Basha");
               var email = controller.emailController.text.split('@');
               if (userType == Selection.user) {
-                appClient = AppClient.setData(username: email[0], authenticationType: auth.AuthenticationType.login);
+                appClient = AppClient.setData(
+                    username: email[0],
+                    authenticationType: auth.AuthenticationType.login);
               } else {
                 appDriver = AppDriver.setData(username: email[0]);
               }
-              Get.offAllNamed(userType == Selection.user ? Routes.clientMapRoute : Routes.driverMapRoute);
-            }
-            else {
-              snackbar(context, "email or password is invalid");
+              Get.offAllNamed(
+                userType == Selection.user
+                    ? Routes.clientMapRoute
+                    : Routes.driverMapRoute,
+              );
+            } else {
+              snackbar(
+                context,
+                "email or password is invalid",
+                ColorManager.error,
+              );
             }
           } else {
-            snackbar(context, "ekteb 7aga Ya M3alem");
+            snackbar(
+              context,
+              "ekteb 7aga Ya M3alem",
+              ColorManager.error,
+            );
           }
         },
       ),
     );
   }
-  void snackbar(BuildContext context,String mass) {
+
+  void snackbar(BuildContext context, String mass, [Color? background]) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: SizedBox(
-          height: 30,
+        padding: EdgeInsets.zero,
+        content: Container(
+          height: AppSize.s60,
+          color: background ?? ColorManager.primary,
           child: Center(
-            child: Text(
-              mass,
-              style: Theme.of(context).textTheme.headlineMedium,
+            child: FittedBox(
+              child: Text(
+                mass,
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
             ),
           ),
         ),

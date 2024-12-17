@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:uber/data/global/variables.dart';
 import 'package:uber/data/models/trip_model.dart';
 import 'package:uber/presentation/client_map/view/client_map_custom_widgets.dart';
-import 'package:uber/presentation/client_map/viewmodel/client_map_viewmodel.dart';
 import 'package:uber/presentation/client_map/viewmodel/client_map_cubit/client_map_cubit.dart';
 import 'package:uber/presentation/client_map/viewmodel/client_map_cubit/client_map_state.dart';
+import 'package:uber/presentation/client_map/viewmodel/client_map_viewmodel.dart';
 import 'package:uber/presentation/resources/color_manager.dart';
 import 'package:uber/presentation/resources/routes_manager.dart';
 import 'package:uber/presentation/resources/strings_manager.dart';
@@ -15,10 +16,13 @@ import 'package:uber/presentation/resources/styles_manager.dart';
 import 'package:uber/presentation/resources/values_manager.dart';
 import 'package:uber/presentation/resources/widgets.dart';
 
+import '../../resources/assets_manager.dart';
+
 class ClientMapView extends StatelessWidget {
-  ClientMapView({super.key});
-  late ClientMapCubit viewModel;
-  TextEditingController commentController = TextEditingController();
+  const ClientMapView({super.key});
+  static late ClientMapCubit viewModel;
+  static final TextEditingController commentController =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -60,24 +64,41 @@ class ClientMapView extends StatelessWidget {
                     width: double.infinity,
                     height: double.infinity,
                     margin: EdgeInsets.only(bottom: h + AppSize.s62),
-                    child: GoogleMap(
-                      onMapCreated: (controller) {
-                        viewModel.mapOnSuccess(controller);
-                      },
-                      onCameraMove: (camera) {
-                        viewModel.mapOnMove(camera);
-                      },
-                      onCameraIdle: () {
-                        viewModel.mapOnStop();
-                      },
-                      initialCameraPosition: CameraPosition(
-                        target: LatLng(
-                          viewModel.userLocation.latitude,
-                          viewModel.userLocation.longitude,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        GoogleMap(
+                          onMapCreated: (controller) {
+                            viewModel.mapOnSuccess(controller);
+                          },
+                          onCameraMove: (camera) {
+                            viewModel.mapOnMove(camera);
+                          },
+                          onCameraIdle: () {
+                            viewModel.mapOnStop();
+                          },
+                          initialCameraPosition: CameraPosition(
+                            target: LatLng(
+                              viewModel.userLocation.latitude,
+                              viewModel.userLocation.longitude,
+                            ),
+                            zoom: AppSize.s18,
+                          ),
+                          markers: viewModel.markers,
                         ),
-                        zoom: AppSize.s18,
-                      ),
-                      markers: viewModel.markers,
+                        Obx(
+                          () => Padding(
+                            padding:
+                                const EdgeInsets.only(bottom: AppPadding.p30),
+                            child: SvgPicture.asset(
+                              locatorType.value == Locator.pickup
+                                  ? ImageAssets.pickupLocationPin
+                                  : ImageAssets.destinationLocationPin,
+                              height: AppSize.s40,
+                            ),
+                          ),
+                        )
+                      ],
                     ),
                   ),
                   Row(
@@ -103,15 +124,18 @@ class ClientMapView extends StatelessWidget {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(
-                            right: AppSize.s20, top: AppSize.s10),
+                          right: AppSize.s20,
+                          top: AppSize.s10,
+                        ),
                         child: IconButton(
                           onPressed: () {
                             mapController.animateCamera(
                               CameraUpdate.newCameraPosition(
                                 CameraPosition(
                                   target: LatLng(
-                                      viewModel.userLocation.latitude,
-                                      viewModel.userLocation.longitude),
+                                    viewModel.userLocation.latitude,
+                                    viewModel.userLocation.longitude,
+                                  ),
                                   zoom: AppSize.s18,
                                 ),
                               ),
@@ -249,8 +273,7 @@ class ClientMapView extends StatelessWidget {
                       duration: Duration(seconds: 1),
                     ),
                   );
-                }
-                else {
+                } else {
                   Get.toNamed(
                     Routes.driverSearchRoute,
                     arguments: [

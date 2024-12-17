@@ -8,8 +8,8 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:uber/domain/client_map_service.dart';
 import 'package:uber/presentation/client_map/view/client_map_custom_widgets.dart';
-import 'package:uber/presentation/client_map/viewmodel/client_map_viewmodel.dart';
 import 'package:uber/presentation/client_map/viewmodel/client_map_cubit/client_map_state.dart';
+import 'package:uber/presentation/client_map/viewmodel/client_map_viewmodel.dart';
 import 'package:uber/presentation/resources/assets_manager.dart';
 
 class ClientMapCubit extends Cubit<ClientMapState> {
@@ -28,8 +28,8 @@ class ClientMapCubit extends Cubit<ClientMapState> {
   late BitmapDescriptor gpsIcon;
   late BitmapDescriptor gpsInActiveIcon;
   late BitmapDescriptor gpsActiveIcon;
-  late BitmapDescriptor pickupIcon;
-  late BitmapDescriptor destinationIcon;
+  // late BitmapDescriptor pickupIcon;
+  // late BitmapDescriptor destinationIcon;
 
   Set<Marker> markers = {};
 
@@ -48,9 +48,9 @@ class ClientMapCubit extends Cubit<ClientMapState> {
       gpsActiveIcon =
           await getIcon(context, ImageAssets.userLocatorSelectedIcon);
       gpsIcon = gpsActiveIcon;
-      pickupIcon = await getIcon(context, ImageAssets.pickupLocationPin);
-      destinationIcon =
-          await getIcon(context, ImageAssets.destinationLocationPin);
+      // pickupIcon = await getIcon(context, ImageAssets.pickupLocationPin);
+      // destinationIcon =
+      //     await getIcon(context, ImageAssets.destinationLocationPin);
     } catch (e) {
       emit(ClientMapFailureState());
     }
@@ -91,17 +91,17 @@ class ClientMapCubit extends Cubit<ClientMapState> {
   void mapOnMove(CameraPosition camera) {
     checkMyLocationSelected(camera);
     markers = {buildGpsMarkerIcon()};
-    if (!myLocationSelected) {
-      markers.add(
-        Marker(
-          markerId: const MarkerId("pinLocation"),
-          position: camera.target,
-          icon: locatorType.value == Locator.pickup
-              ? pickupIcon
-              : destinationIcon,
-        ),
-      );
-    }
+    // if (!myLocationSelected) {
+    //   markers.add(
+    //     Marker(
+    //       markerId: const MarkerId("pinLocation"),
+    //       position: camera.target,
+    //       icon: locatorType.value == Locator.pickup
+    //           ? pickupIcon
+    //           : destinationIcon,
+    //     ),
+    //   );
+    // }
 
     if (locatorType.value == Locator.pickup) {
       pickupLocation.value = camera.target;
@@ -127,7 +127,8 @@ class ClientMapCubit extends Cubit<ClientMapState> {
   }
 
   Future<void> calculateTimeAndCost() async {
-    Map<String, dynamic> timeAndDistance = await ClientMapService().getTime(pickupLocation.value, destinationLocation.value);
+    Map<String, dynamic> timeAndDistance = await ClientMapService()
+        .getTime(pickupLocation.value, destinationLocation.value);
     expectedTime.value = timeAndDistance["time"]!;
     distance.value = timeAndDistance["distance"]!;
     cost.value = (expectedTime.value * 3).round();
@@ -138,5 +139,4 @@ class ClientMapCubit extends Cubit<ClientMapState> {
     mapController.dispose();
     streamSubscription.cancel();
   }
-
 }

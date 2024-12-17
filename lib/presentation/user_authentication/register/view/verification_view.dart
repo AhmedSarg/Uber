@@ -5,6 +5,8 @@ import 'package:uber/data/global/variables.dart';
 import 'package:uber/presentation/resources/color_manager.dart';
 import 'package:uber/presentation/resources/routes_manager.dart';
 import 'package:uber/presentation/resources/strings_manager.dart';
+import 'package:uber/presentation/resources/styles_manager.dart';
+import 'package:uber/presentation/resources/values_manager.dart';
 import 'package:uber/presentation/resources/widgets.dart';
 import 'package:uber/presentation/user_authentication/model/user_authentication_model.dart';
 import 'package:uber/presentation/user_authentication/register/model/register_model.dart';
@@ -59,6 +61,8 @@ class VerificationView extends GetView<RegisterController> {
           borderWidth: 2.0,
           fillColor: ColorManager.white,
           filled: true,
+          textStyle:
+              getMediumStyle(color: ColorManager.dark, fontSize: AppSize.s18),
           //runs when every textfield is filled
           onSubmit: (String verificationCode) {
             controller.otpTextField.text = verificationCode;
@@ -72,7 +76,6 @@ class VerificationView extends GetView<RegisterController> {
           if (controller.otpTextField.text.length == 6) {
             if (await controller.sentCode()) {
               controller.signupWithEmailAndPassword();
-
               try {
                 appClient = AppClient.setData(
                   username: controller.emailController.text.split('@')[0],
@@ -80,13 +83,14 @@ class VerificationView extends GetView<RegisterController> {
                   email: controller.emailController.text,
                   phoneNumber: controller.phoneNumberController.text,
                   gender: genderValue.value,
-                  dateOfBirth: "${controller.yearController.text}-${controller.monthController.text}-${controller.dayController.text}",
+                  dateOfBirth:
+                      "${controller.yearController.text}-${controller.monthController.text}-${controller.dayController.text}",
                   authenticationType: AuthenticationType.register,
                 );
               } catch (e) {
+                print("register error");
                 print(e);
               }
-
 
               snackbar(context, "5osh Ya Basha");
               Get.offAllNamed(Routes.clientMapRoute);

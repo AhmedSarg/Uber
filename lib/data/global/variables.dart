@@ -39,7 +39,8 @@ class AppClient {
           _singleton.email = client["email"];
           _singleton.phoneNumber = client["phoneNumber"];
           _singleton.dateOfBirth = client["dateOfBirth"];
-          _singleton.gender = client["gender"] == "male" ? Gender.male : Gender.female;
+          _singleton.gender =
+              client["gender"] == "male" ? Gender.male : Gender.female;
           _singleton.location.value =
               LatLng(clientLocation.latitude, clientLocation.longitude);
         },
@@ -50,10 +51,15 @@ class AppClient {
       _singleton.phoneNumber = phoneNumber;
       _singleton.dateOfBirth = dateOfBirth;
       _singleton.gender = gender;
+      print(0);
       Geolocator.getCurrentPosition().then(
         (value) {
+          print(1);
           GeoPoint position = GeoPoint(value.latitude, value.longitude);
-
+          print(2);
+          _singleton.location.value =
+              LatLng(position.latitude, position.longitude);
+          print(3);
           firestore.collection("clients").doc(username).set(
             {
               "fullName": fullName,
@@ -63,17 +69,13 @@ class AppClient {
               "gender": gender == Gender.male ? "male" : "female",
               "location": position,
             },
-          ).then(
-            (value) {
-              _singleton.location.value =
-                  LatLng(position.latitude, position.longitude);
-            },
           );
         },
       );
     }
     return _singleton;
   }
+
   factory AppClient() {
     return _singleton;
   }
@@ -113,7 +115,8 @@ class AppDriver {
         _singleton.email = driver["email"];
         _singleton.phoneNumber = driver["phoneNumber"];
         _singleton.dateOfBirth = driver["dateOfBirth"];
-        _singleton.gender = driver["gender"] == "male" ? Gender.male : Gender.female;
+        _singleton.gender =
+            driver["gender"] == "male" ? Gender.male : Gender.female;
         _singleton.address = driver["address"];
         _singleton.carModel = driver["carModel"];
         _singleton.carColor = driver["carColor"];
@@ -131,6 +134,8 @@ class AppDriver {
   }
 }
 
-var appDriver = AppDriver.setData(username: "SherifMohamed");
+// var appDriver = AppDriver.setData(username: "sherifmohamed");
+
+late AppDriver appDriver;
 
 Selection userType = Selection.user;
